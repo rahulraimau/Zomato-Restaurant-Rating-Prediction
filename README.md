@@ -1,5 +1,7 @@
 # Zomato Restaurant Rating Prediction
 
+live demo:https://zomato-restaurant-rating-prediction.onrender.com/
+
 ## Project Summary
 
 This project focuses on predicting restaurant ratings on Zomato by leveraging various data sources, including restaurant metadata, user reviews, and incorporating sentiment analysis of review text. The project follows a comprehensive machine learning pipeline, from data loading and cleaning to advanced feature engineering, training and comparing multiple predictive models, and evaluating their performance. A key objective is to identify the most influential factors affecting restaurant ratings, including the role of sentiment derived from reviews. Additionally, the project explores the relationship between cuisine, cost, and sentiment to provide deeper business insights.
