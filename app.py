@@ -2,38 +2,53 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
-from sklearn.feature_extraction.text import TfidfVectorizer
 import joblib
-import re
-import os
 
-# ---------- Page Setup ----------
-st.set_page_config(page_title="Zomato Review Rating Predictor", layout="centered")
+# Set up Streamlit page
+st.set_page_config(page_title="Zomato Rating Predictor", layout="centered")
 st.title("🍽️ Zomato Restaurant Rating Predictor")
-st.write("Predict restaurant review ratings using a tuned XGBoost model.")
+st.write("Predict review ratings using your model!")
 
-# ---------- Load Dataset ----------
+# Load data
 @st.cache_data
 def load_data():
     try:
-        return pd.read_csv("Zomato Restaurant reviews.csv")
+        return pd.read_csv("Zomato Restaurant reviews.csv")  # ✅ correct: file name as string
     except FileNotFoundError:
-        st.error("CSV file not found. Please upload 'Zomato Restaurant reviews.csv' to the root directory.")
+        st.error("CSV file not found. Please make sure 'Zomato Restaurant reviews.csv' is uploaded.")
         return pd.DataFrame()
 
 df = load_data()
 
-# ---------- Show available columns ----------
+# Show sample
 if not df.empty:
-    st.write("📌 Available Columns:", df.columns.tolist())
-
-    # Detect review column
-    REVIEW_COL = "Review" if "Review" in df.columns else df.columns[0]
-
-    if st.checkbox("Show sample reviews"):
-        st.dataframe(df[[REVIEW_COL, 'Rating']].dropna().head())
+    st.subheader("Sample Data")
+    st.write(df.head())
 else:
     st.stop()
+
+# Load model
+@st.cache_resource
+def load_model():
+    try:
+        return joblib.load("xgboost_model.joblib")
+    except:
+        st.warning("Model file not found. Upload `xgboost_model.joblib` to root.")
+        return None
+
+model = load_model()
+
+# Predict from review input
+st.subheader("🔍 Predict Rating from Review")
+review_input = st.text_area("Enter your review")
+
+if st.button("Predict Rating") and model:
+    # Minimal cleaning
+    cleaned = review_input.lower()
+    tfidf = joblib.load("tfidf_vectorizer.joblib")
+    vec = tfidf.transform([cleaned])
+    prediction = model.predict(vec)
+    st.success(f"Predicted Rating: ⭐ {round(prediction[0], 2)}")
 
 # ---------- Clean Text ----------
 def clean_text(text):
