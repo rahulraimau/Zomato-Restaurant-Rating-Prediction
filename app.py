@@ -45,7 +45,7 @@ else:
 
 # ---------- Vectorizer ----------
 def build_vectorizer(text_data):
-    vectorizer = TfidfVectorizer(max_features=5000, stop_words='english')
+    vectorizer = TfidfVectorizer(max_features=30, stop_words='english')
     vectorizer.fit(text_data)
     return vectorizer
 
