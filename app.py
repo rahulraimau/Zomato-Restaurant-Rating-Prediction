@@ -9,7 +9,7 @@ import os
 
 # Paths
 MODEL_PATH = r"C:\Users\DELL\PycharmProjects\zomato_rating\restaurant_rating_tuned_xgboost_model.joblib"
-DATA_PATH =r"C:\Users\DELL\PycharmProjects\zomato_rating\Zomato Restaurant reviews.csv"
+df = pd.read_csv("Zomato Restaurant reviews.csv")
 
 # ---------- Page Setup ----------
 st.set_page_config(page_title="Zomato Review Rating Predictor", layout="centered")
@@ -19,7 +19,7 @@ st.write("Predict restaurant review ratings using a tuned XGBoost model.")
 # ---------- Load Dataset ----------
 @st.cache_data
 def load_data():
-    return pd.read_csv(DATA_PATH)
+    return pd.read_csv(df)
 
 df = load_data()
 
