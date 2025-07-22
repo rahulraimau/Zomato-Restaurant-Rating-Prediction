@@ -7,10 +7,6 @@ import joblib
 import re
 import os
 
-# Paths
-MODEL_PATH = r"C:\Users\DELL\PycharmProjects\zomato_rating\restaurant_rating_tuned_xgboost_model.joblib"
-df = pd.read_csv("Zomato Restaurant reviews.csv")
-
 # ---------- Page Setup ----------
 st.set_page_config(page_title="Zomato Review Rating Predictor", layout="centered")
 st.title("🍽️ Zomato Restaurant Rating Predictor")
@@ -19,18 +15,25 @@ st.write("Predict restaurant review ratings using a tuned XGBoost model.")
 # ---------- Load Dataset ----------
 @st.cache_data
 def load_data():
-    return pd.read_csv(df)
+    try:
+        return pd.read_csv("Zomato Restaurant reviews.csv")
+    except FileNotFoundError:
+        st.error("CSV file not found. Please upload 'Zomato Restaurant reviews.csv' to the root directory.")
+        return pd.DataFrame()
 
 df = load_data()
 
-# Show available columns
-st.write("📌 Available Columns:", df.columns.tolist())
+# ---------- Show available columns ----------
+if not df.empty:
+    st.write("📌 Available Columns:", df.columns.tolist())
 
-# Detect review column
-REVIEW_COL = "Review" if "Review" in df.columns else df.columns[0]
+    # Detect review column
+    REVIEW_COL = "Review" if "Review" in df.columns else df.columns[0]
 
-if st.checkbox("Show sample reviews"):
-    st.dataframe(df[[REVIEW_COL, 'Rating']].dropna().head())
+    if st.checkbox("Show sample reviews"):
+        st.dataframe(df[[REVIEW_COL, 'Rating']].dropna().head())
+else:
+    st.stop()
 
 # ---------- Clean Text ----------
 def clean_text(text):
